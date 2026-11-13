@@ -5,6 +5,8 @@ public:
 	CImage m_img;
 	bool m_isLeft;
 	float m_ang;
+	//1フレームでフリッパーの角度がどれだけ変化したかを記録
+	float m_angVelocity;
 	bool m_isPressed;
 public:
 	Flipper(const CVector2D& pos,bool isLeft);

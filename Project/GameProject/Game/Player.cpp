@@ -23,12 +23,14 @@ void Player::Update()
 	//6:A 7:D
 	if (PULL(CInput::eButton6))
 	{
-		m_flipperInputTime = 40;
+		//フリッパー押した判定の緩さ
+		m_flipperInputTime = 9;
 		m_flipperInputSide = 1;
 	}
 	else if (PULL(CInput::eButton7))
 	{
-		m_flipperInputTime = 40;
+		//フリッパー押した判定の緩さ
+		m_flipperInputTime = 9;
 		m_flipperInputSide = 2;
 	}
 	else if (m_flipperInputTime > 0)
@@ -68,9 +70,9 @@ void Player::Update()
 			//左フリッパーに当たっていて、左ボタンを押した瞬間 → 上に発射
 			if (f->m_isLeft && m_flipperInputSide == 1 && m_flipperInputTime > 0)
 			{
-				m_vec.x += tangent.x * 5.0f;
+				m_vec.x += tangent.x * 10.0f;
 
-				m_vec.y -= 25.0f;
+				m_vec.y -= 35.0f;
 
 				m_flipperInputTime = 0;
 				m_flipperInputSide = 0;
@@ -78,9 +80,9 @@ void Player::Update()
 			//右フリッパーに当たっていて、右ボタンを押した瞬間 → 上に発射
 			else if (!f->m_isLeft && m_flipperInputSide == 2 && m_flipperInputTime > 0)
 			{
-				m_vec.x += tangent.x * -5.0f;
+				m_vec.x += tangent.x * -10.0f;
 
-				m_vec.y -= 25.0f;
+				m_vec.y -= 35.0f;
 
 				m_flipperInputTime = 0;
 				m_flipperInputSide = 0;
