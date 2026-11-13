@@ -1,17 +1,20 @@
 #pragma once
 enum {
-    eType_Field,
-    eType_Map,
-    eType_Door,
-    eType_AreaChange,
+    //eType_Field,
+    //eType_Map,
+    //eType_Door,
+    //eType_AreaChange,
+    eType_Wall,
+    eType_Flipper,
     eType_Player,
-    eType_Enemy,
-    eType_Goal,
-    eType_Player_Attack,
-    eType_Enemy_Attack,
-    eType_Effect,
+    //eType_Enemy,
+    //eType_Goal,
+    //eType_Player_Attack,
+    //eType_Enemy_Attack,
+    //eType_Effect,
     eType_UI,
     eType_Scene,
+    eType_Result,
 };
 
 //èdóÕâ¡ë¨ìx

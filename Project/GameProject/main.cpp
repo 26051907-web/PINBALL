@@ -1,4 +1,6 @@
 #include "Base/Base.h"
+#include "Game/Player.h"
+#include "Title/Title.h"
 
 void MainLoop(void) {
 	//--------------------------------------------------------------
@@ -14,7 +16,7 @@ void MainLoop(void) {
 
 void Init(void)
 {
-	glClearColor(1.0, 1.0, 1.0, 1.0);
+	glClearColor(0.0, 0.0, 0.0, 0.0);
 
 	glEnable(GL_DEPTH_TEST);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -37,6 +39,8 @@ void Init(void)
 	CInput::SetButton(0, CInput::eButton2, 'X');
 	CInput::SetButton(0, CInput::eButton3, 'C');
 	CInput::SetButton(0, CInput::eButton4, 'V');
+	CInput::SetButton(0, CInput::eButton6, 'A');
+	CInput::SetButton(0, CInput::eButton7, 'D');
 	CInput::SetButton(0, CInput::eButton5, VK_SPACE);
 	CInput::SetButton(0, CInput::eButton10, VK_RETURN);
 	CInput::SetButton(0, CInput::eUp, VK_UP);
@@ -83,9 +87,11 @@ void Init(void)
 	//èâä˙âªÇÃñΩóﬂÇèëÇ≠
 	//ÉQÅ[ÉÄãNìÆéûÇ…àÍìxÇæÇØåƒÇŒÇÍÇÈ
 	//-----------------------------------------------------
-	
-
-
+	ADD_RESOURCE("Player", CImage::CreateImage("Image/Player.png"));
+	ADD_RESOURCE("Title", CImage::CreateImage("Image/Title.png"));
+	ADD_RESOURCE("Wall", CImage::CreateImage("Image/Wall.png"));
+	ADD_RESOURCE("Flipper", CImage::CreateImage("Image/Flipper.png"));
+	new Title();
 
 
 
