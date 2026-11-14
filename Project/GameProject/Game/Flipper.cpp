@@ -8,6 +8,7 @@ Flipper::Flipper(const CVector2D& pos,bool isLeft) :Base(eType_Flipper)
 	m_img.SetCenter(80, 16);
 	//m_img.SetSize(1000, 1000);
 	m_isLeft = isLeft;
+    m_angVelocity = 0.0f;
 
     if (m_isLeft)
     {
@@ -23,7 +24,10 @@ Flipper::Flipper(const CVector2D& pos,bool isLeft) :Base(eType_Flipper)
 }
 void Flipper::Update()
 {
-    //6:A 7:D
+    float oldAng = m_ang;
+    float targetAng;
+
+    //eButton 6:A 7:D
     if (m_isLeft)
     {
         if (HOLD(CInput::eButton6))
@@ -31,14 +35,14 @@ void Flipper::Update()
             m_isPressed = true;
 
             // 回転させる
-            m_ang = -0.79f;
+            targetAng = -0.79f;
         }
         else
         {
             m_isPressed = false;
 
             // 元の角度に戻す
-            m_ang = 0.52f;
+            targetAng = 0.52f;
         }
     }
     else
@@ -46,14 +50,22 @@ void Flipper::Update()
         if (HOLD(CInput::eButton7))
         {
             // 回転させる
-            m_ang = 0.79f;
+            targetAng = 0.79f;
         }
         else
         {
             // 元の角度に戻す
-            m_ang = -0.52f;
+            targetAng = -0.52f;
         }
     }
+    //targetAng - m_ang：目標までの残り角度
+    //* 0.3f：残りの30%だけ動く
+    //m_ang +=：今の角度に動いた分を足す
+    m_ang += (targetAng - m_ang) * 0.3f;
+
+    //1フレーム前から、角度がどれだけ変わったか記録
+    m_angVelocity = m_ang - oldAng;
+
     m_img.SetAng(-m_ang);
 }
 void Flipper::Draw()

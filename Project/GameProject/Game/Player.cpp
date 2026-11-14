@@ -70,9 +70,12 @@ void Player::Update()
 			//左フリッパーに当たっていて、左ボタンを押した瞬間 → 上に発射
 			if (f->m_isLeft && m_flipperInputSide == 1 && m_flipperInputTime > 0)
 			{
-				m_vec.x += tangent.x * 10.0f;
+				m_vec.x += tangent.x * 5.0f;
 
-				m_vec.y -= 35.0f;
+				m_vec.y -= 55.0f;
+				//ここ
+				m_vec.x += f->m_angVelocity * 20.0f;
+				//m_vec.y += f->m_angVelocity * 10.0f;
 
 				m_flipperInputTime = 0;
 				m_flipperInputSide = 0;
@@ -80,9 +83,12 @@ void Player::Update()
 			//右フリッパーに当たっていて、右ボタンを押した瞬間 → 上に発射
 			else if (!f->m_isLeft && m_flipperInputSide == 2 && m_flipperInputTime > 0)
 			{
-				m_vec.x += tangent.x * -10.0f;
+				m_vec.x += tangent.x * -5.0f;
 
-				m_vec.y -= 35.0f;
+				m_vec.y -= 55.0f;
+				//ここ
+				m_vec.x += f->m_angVelocity * 20.0f;
+				//m_vec.y -= f->m_angVelocity * 10.0f;
 
 				m_flipperInputTime = 0;
 				m_flipperInputSide = 0;
