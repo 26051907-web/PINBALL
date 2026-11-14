@@ -1,6 +1,7 @@
 #include "Base/Base.h"
 #include "Game/Player.h"
 #include "Game/Flipper.h"
+#include "Game/Wall.h"
 
 Player::Player(const CVector2D& pos) :Base(eType_Player)
 {
@@ -42,7 +43,43 @@ void Player::Update()
 	m_vec.y += GRAVITY;
 	m_pos += m_vec;
 
+	//Baseのリストに登録されているFlipperをまとめて取得
 	std::vector<Base*> flippers = Base::FindObjects(eType_Flipper);
+	//Baseのリストに登録されているWallをまとめて取得
+	std::vector<Base*> walls = Base::FindObjects(eType_Wall);
+
+	//Wallから1つずつ取り出す→Base* を Wall* に変換する→Wall専用の関数を使えるようにする
+	for (Base* b : walls)
+	{
+		Wall* w = (Wall*)b;
+
+		//dx：ボールと壁の左右方向の距離
+		//dy：ボールと壁の上下方向の距離
+		float dx = m_pos.x - w->m_pos.x;
+		float dy = m_pos.y - w->m_pos.y;
+
+		//fabs() は小数の絶対値を求める関数 マイナスの距離もプラスにして比較できる
+		if (fabs(dx) < m_rad + w->m_halfWidth &&
+			fabs(dy) < m_rad + w->m_halfHeight)
+		{
+			//当たったときの処理
+			float overlapX = m_rad + w->m_halfWidth - fabs(dx);
+
+			if (dx >= 0)
+			{
+				m_pos.x += overlapX;
+			}
+			else
+			{
+				m_pos.x -= overlapX;
+			}
+			//ポヨンッ
+			if (dx * m_vec.x < 0.0f)
+			{
+				m_vec.x *= -0.9f;
+			}
+		}
+	}
 
 	//当たったかどうかを記録　最初は当たってない状態
 	bool isHit = false;

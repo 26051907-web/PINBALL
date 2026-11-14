@@ -139,15 +139,15 @@ bool Flipper::IsHit(const CVector2D& ballPos, CVector2D& normal, CVector2D& tang
     //当たった位置が hitPosition に保存される
     hitPosition = t;
 
-    //最短距離になるか点を求めている
+    //最短距離になる点を求めている
     CVector2D closest = start + line * t;
     //diff:ボールと最短地点の距離を表すベクトル
     CVector2D diff = ballPos - closest;
     float distance = diff.Length();
 
+    //overlap：ボールが判定範囲にどれだけ入り込んだか
     overlap = 24.0f - distance;
 
-    //overlap：ボールが判定範囲にどれだけ入り込んだか
     //normal：ボールを押し戻す方向
     normal.x = -tangent.y;
     normal.y = tangent.x;
