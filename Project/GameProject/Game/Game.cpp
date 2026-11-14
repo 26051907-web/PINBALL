@@ -7,10 +7,10 @@
 Game::Game() :Base(eType_Scene)
 {
 	//new Player(CVector2D(860, 700));
-	new Player(CVector2D(620, 400));
+	new Player(CVector2D(640, 400));
 	new Wall(CVector2D(600, 500));
-	new Flipper(CVector2D(615, 900),true);
-	new Flipper(CVector2D(785, 900), false);
+	new Flipper(CVector2D(610, 900),true);
+	new Flipper(CVector2D(910, 900), false);
 }
 
 void::Game::Update()

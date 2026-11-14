@@ -7,6 +7,7 @@ Player::Player(const CVector2D& pos) :Base(eType_Player)
 	m_img = COPY_RESOURCE("Player", CImage);
 	m_pos = pos;
 	m_img.SetCenter(16, 16);
+	m_rad = 16.0f;
 	m_wasHit = false;
 	m_flipperInputTime = 0;
 	m_flipperInputSide = 0;
@@ -24,13 +25,13 @@ void Player::Update()
 	if (PULL(CInput::eButton6))
 	{
 		//フリッパー押した判定の緩さ
-		m_flipperInputTime = 9;
+		m_flipperInputTime = 7;
 		m_flipperInputSide = 1;
 	}
 	else if (PULL(CInput::eButton7))
 	{
 		//フリッパー押した判定の緩さ
-		m_flipperInputTime = 9;
+		m_flipperInputTime = 7;
 		m_flipperInputSide = 2;
 	}
 	else if (m_flipperInputTime > 0)
@@ -54,9 +55,13 @@ void Player::Update()
 		CVector2D normal;
 		CVector2D tangent;
 		float overlap;
+		float hitPosition;
 
-		if (f->IsHit(m_pos, normal, tangent, overlap))
+		if (f->IsHit(m_pos, normal, tangent, overlap, hitPosition))
 		{
+			//当たった位置によって強さが変わる
+			float power = 0.75f + hitPosition * 0.25f;
+
 			//ボールがフリッパーにめり込んだら、表面まで押し戻す
 			m_pos += normal * overlap;
 
@@ -70,9 +75,9 @@ void Player::Update()
 			//左フリッパーに当たっていて、左ボタンを押した瞬間 → 上に発射
 			if (f->m_isLeft && m_flipperInputSide == 1 && m_flipperInputTime > 0)
 			{
-				m_vec.x += tangent.x * 5.0f;
+				m_vec.x += tangent.x * 1.5f;
 
-				m_vec.y -= 55.0f;
+				m_vec.y -= 55.0f * power;
 				//ここ
 				m_vec.x += f->m_angVelocity * 20.0f;
 				//m_vec.y += f->m_angVelocity * 10.0f;
@@ -83,9 +88,9 @@ void Player::Update()
 			//右フリッパーに当たっていて、右ボタンを押した瞬間 → 上に発射
 			else if (!f->m_isLeft && m_flipperInputSide == 2 && m_flipperInputTime > 0)
 			{
-				m_vec.x += tangent.x * -5.0f;
+				m_vec.x += tangent.x * 1.5f;
 
-				m_vec.y -= 55.0f;
+				m_vec.y -= 55.0f * power;
 				//ここ
 				m_vec.x += f->m_angVelocity * 20.0f;
 				//m_vec.y -= f->m_angVelocity * 10.0f;
@@ -104,6 +109,14 @@ void Player::Update()
 	if (!isHit)
 	{
 		m_wasHit = false;
+	}
+	//画面外に出たら削除予約
+	if (m_pos.x + m_rad < 0 ||
+		m_pos.x - m_rad > 1920 ||
+		m_pos.y + m_rad < 0 ||
+		m_pos.y - m_rad > 1080)
+	{
+		SetKill();
 	}
 }
 void Player::Draw()

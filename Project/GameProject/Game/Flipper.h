@@ -12,5 +12,5 @@ public:
 	Flipper(const CVector2D& pos,bool isLeft);
 	void Update();
 	void Draw();
-	bool IsHit(const CVector2D& ballPos, CVector2D& normal, CVector2D& tangent, float& overlap);
+	bool IsHit(const CVector2D& ballPos, CVector2D& normal, CVector2D& tangent, float& overlap, float& hitPosition);
 };

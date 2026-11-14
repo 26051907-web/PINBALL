@@ -104,6 +104,8 @@ void Init(void)
 
 void Release()
 {
+	Base::KillAll();
+	Base::CheckKillAll();
 
 	CMultiThread::ClearInstance();
 	CSound::ClearInstance();
@@ -241,9 +243,9 @@ int __main(int* argcp, char** argv) {
 
 	}
 
-	glfwTerminate();
-
 	Release();
+	glfwTerminate();
+	
 	return 0;
 }
 

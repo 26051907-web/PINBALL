@@ -5,9 +5,18 @@ Flipper::Flipper(const CVector2D& pos,bool isLeft) :Base(eType_Flipper)
 {
 	m_img = COPY_RESOURCE("Flipper", CImage);
 	m_pos = pos;
-	m_img.SetCenter(80, 16);
+    m_isLeft = isLeft;
+    //フリッパーの回転軸
+    if (m_isLeft)
+    {
+        m_img.SetCenter(0, 16);
+    }
+    else
+    {
+        m_img.SetCenter(160, 16);
+    }
 	//m_img.SetSize(1000, 1000);
-	m_isLeft = isLeft;
+	
     m_angVelocity = 0.0f;
 
     if (m_isLeft)
@@ -59,9 +68,9 @@ void Flipper::Update()
         }
     }
     //targetAng - m_ang：目標までの残り角度
-    //* 0.3f：残りの30%だけ動く
+    //* 0.6f：残りの60%だけ動く
     //m_ang +=：今の角度に動いた分を足す
-    m_ang += (targetAng - m_ang) * 0.3f;
+    m_ang += (targetAng - m_ang) * 0.6f;
 
     //1フレーム前から、角度がどれだけ変わったか記録
     m_angVelocity = m_ang - oldAng;
@@ -71,21 +80,40 @@ void Flipper::Update()
 void Flipper::Draw()
 {
 	m_img.SetPos(m_pos);
+
+    if (!m_isLeft)
+    {
+        m_img.m_flipH = true;
+    }
+    else
+    {
+        m_img.m_flipH = false;
+    }
+
 	m_img.Draw();
 }
-bool Flipper::IsHit(const CVector2D& ballPos, CVector2D& normal, CVector2D& tangent, float& overlap)
+bool Flipper::IsHit(const CVector2D& ballPos, CVector2D& normal, CVector2D& tangent, float& overlap, float& hitPosition)
 {
     CVector2D start;
     CVector2D end;
 
-    float dx = 80 * cos(m_ang);
-    float dy = 80 * sin(m_ang);
+    float dx = 160 * cos(m_ang);
+    float dy = 160 * sin(m_ang);
 
-    start.x = m_pos.x - dx;
-    start.y = m_pos.y - dy;
-
-    end.x = m_pos.x + dx;
-    end.y = m_pos.y + dy;
+    if (m_isLeft)
+    {
+        // 左：左端を回転軸にする
+        start = m_pos;
+        end.x = m_pos.x + dx;
+        end.y = m_pos.y + dy;
+    }
+    else
+    {
+        // 右：右端を回転軸にする
+        start = m_pos;
+        end.x = m_pos.x - dx;
+        end.y = m_pos.y - dy;
+    }
 
     //line:フリッパーの端から端までのベクトル　フリッパーそのものからボールまでのベクトル
     CVector2D line = end - start;
@@ -107,6 +135,9 @@ bool Flipper::IsHit(const CVector2D& ballPos, CVector2D& normal, CVector2D& tang
     //これで線分の外にある場合も、最も近い端点を使って距離を計算できる
     if (t < 0.0f) t = 0.0f;
     if (t > 1.0f) t = 1.0f;
+
+    //当たった位置が hitPosition に保存される
+    hitPosition = t;
 
     //最短距離になるか点を求めている
     CVector2D closest = start + line * t;

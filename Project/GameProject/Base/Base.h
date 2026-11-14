@@ -32,6 +32,7 @@ public:
 	
     static CVector2D m_scroll;          //スクロール値
     static std::list<Base*> m_list;     //オブジェクトリスト
+
 public:
     /// <summary>
     /// コンストラクタ
