@@ -146,7 +146,7 @@ bool Flipper::IsHit(const CVector2D& ballPos, CVector2D& normal, CVector2D& tang
     float distance = diff.Length();
 
     //overlap：ボールが判定範囲にどれだけ入り込んだか
-    overlap = 24.0f - distance;
+    overlap = 32.0f - distance;
 
     //normal：ボールを押し戻す方向
     normal.x = -tangent.y;
@@ -158,5 +158,5 @@ bool Flipper::IsHit(const CVector2D& ballPos, CVector2D& normal, CVector2D& tang
     }
 
     //距離を2乗して比較
-    return diff.LengthSq() <= 24 * 24;
+    return diff.LengthSq() <= 32 * 32;
 }
