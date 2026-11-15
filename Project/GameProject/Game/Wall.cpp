@@ -5,8 +5,8 @@ Wall::Wall(const CVector2D& pos) :Base(eType_Wall)
 {
 	m_img = COPY_RESOURCE("Wall", CImage);
 	m_pos = pos;
-	m_img.SetCenter(16,80);
-	//m_img.SetSize(1000, 1000);
+	m_img.SetCenter(320, 800);
+	m_img.SetSize(640, 1600);
 
 }
 void Wall::Update()

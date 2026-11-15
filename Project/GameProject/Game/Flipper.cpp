@@ -92,7 +92,8 @@ void Flipper::Draw()
 
 	m_img.Draw();
 }
-bool Flipper::IsHit(const CVector2D& ballPos, CVector2D& normal, CVector2D& tangent, float& overlap, float& hitPosition)
+bool Flipper::IsHit(const CVector2D& ballPos, CVector2D& normal, CVector2D& tangent,
+     float& overlap, float& hitPosition)
 {
     CVector2D start;
     CVector2D end;

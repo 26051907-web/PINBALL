@@ -41,6 +41,7 @@ void Init(void)
 	CInput::SetButton(0, CInput::eButton4, 'V');
 	CInput::SetButton(0, CInput::eButton6, 'A');
 	CInput::SetButton(0, CInput::eButton7, 'D');
+	CInput::SetButton(0, CInput::eButton8, 'S');
 	CInput::SetButton(0, CInput::eButton5, VK_SPACE);
 	CInput::SetButton(0, CInput::eButton10, VK_RETURN);
 	CInput::SetButton(0, CInput::eUp, VK_UP);
@@ -90,7 +91,9 @@ void Init(void)
 	ADD_RESOURCE("Player", CImage::CreateImage("Image/Player.png"));
 	ADD_RESOURCE("Title", CImage::CreateImage("Image/Title.png"));
 	ADD_RESOURCE("Wall", CImage::CreateImage("Image/Wall.png"));
+	ADD_RESOURCE("SlopeWall", CImage::CreateImage("Image/SlopeWall.png"));
 	ADD_RESOURCE("Flipper", CImage::CreateImage("Image/Flipper.png"));
+	ADD_RESOURCE("Spring", CImage::CreateImage("Image/Spring.png"));
 	new Title();
 
 

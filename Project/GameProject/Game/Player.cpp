@@ -2,16 +2,21 @@
 #include "Game/Player.h"
 #include "Game/Flipper.h"
 #include "Game/Wall.h"
+#include "Game/SlopeWall.h"
 
 Player::Player(const CVector2D& pos) :Base(eType_Player)
 {
 	m_img = COPY_RESOURCE("Player", CImage);
+	m_springImg = COPY_RESOURCE("Spring", CImage);
+	m_springImg.SetCenter(12, 60);
 	m_pos = pos;
 	m_img.SetCenter(16, 16);
 	m_rad = 16.0f;
 	m_wasHit = false;
 	m_flipperInputTime = 0;
 	m_flipperInputSide = 0;
+	m_isLaunched = false;
+	m_charge = 0;
 	//m_img.SetSize(1000, 1000);
 	
 }
@@ -25,14 +30,16 @@ void Player::Update()
 	//6:A 7:D
 	if (PULL(CInput::eButton6))
 	{
-		//フリッパー押した判定の緩さ
-		m_flipperInputTime = 7;
+		//フリッパー入力受付時間
+		m_flipperInputTime = 8;
+
 		m_flipperInputSide = 1;
 	}
 	else if (PULL(CInput::eButton7))
 	{
-		//フリッパー押した判定の緩さ
-		m_flipperInputTime = 7;
+		//フリッパー入力受付時間
+		m_flipperInputTime = 8;
+
 		m_flipperInputSide = 2;
 	}
 	else if (m_flipperInputTime > 0)
@@ -40,8 +47,38 @@ void Player::Update()
 		m_flipperInputTime--;
 	}
 
-	m_vec.y += GRAVITY;
-	m_pos += m_vec;
+	//ランチャーの処理
+	//発射前のボールは (1200, 850) に固定
+	if (!m_isLaunched)
+	{
+		m_pos = CVector2D(1200, 850);
+	}
+	//ボタン8を押している間、バネのチャージ量を増やす
+	if (!m_isLaunched)
+	{
+		if (HOLD(CInput::eButton8))
+		{
+			m_charge++;
+			if (m_charge > 57)
+			{
+				m_charge = 57;
+			}
+		}
+		else if (FREE(CInput::eButton8) && m_charge > 0)
+		{
+			// ここで発射する
+			m_isLaunched = true;//発射済みにする
+			m_vec.x = -5.0f;        // 左方向への初速
+			m_vec.y = -m_charge;//上方向に速度を与える
+			m_charge = 0;//チャージをリセットする
+		}
+	}
+	//発射前は重力も移動も発生しない
+	if (m_isLaunched)
+	{
+		m_vec.y += GRAVITY;
+		m_pos += m_vec;
+	}
 
 	//Baseのリストに登録されているFlipperをまとめて取得
 	std::vector<Base*> flippers = Base::FindObjects(eType_Flipper);
@@ -59,24 +96,52 @@ void Player::Update()
 		float dy = m_pos.y - w->m_pos.y;
 
 		//fabs() は小数の絶対値を求める関数 マイナスの距離もプラスにして比較できる
+		//ボールと壁の中心座標の距離を調べて、横幅・縦幅の範囲内に入ったかを判定している
 		if (fabs(dx) < m_rad + w->m_halfWidth &&
 			fabs(dy) < m_rad + w->m_halfHeight)
 		{
 			//当たったときの処理
+			//横方向のめり込み量
 			float overlapX = m_rad + w->m_halfWidth - fabs(dx);
+			//上下方向のめり込み量
+			float overlapY = m_rad + w->m_halfHeight - fabs(dy);
 
-			if (dx >= 0)
+			//横と縦、どちらの衝突か判定　横と縦、めり込みが浅い方からの衝突と考えられる
+			if (overlapX < overlapY)
 			{
-				m_pos.x += overlapX;
+				// 左右から衝突　押し戻し
+				if (dx >= 0)
+				{
+					m_pos.x += overlapX;
+				}
+				else
+				{
+					m_pos.x -= overlapX;
+				}
+				//ポヨンッ
+				if (dx * m_vec.x < 0.0f)
+				{
+					//90%反発　壁にぶつかると10%勢いが落ちる
+					m_vec.x *= -0.9f;
+				}
 			}
 			else
 			{
-				m_pos.x -= overlapX;
-			}
-			//ポヨンッ
-			if (dx * m_vec.x < 0.0f)
-			{
-				m_vec.x *= -0.9f;
+				// 上下から衝突　押し戻し
+				if (dy >= 0)
+				{
+					m_pos.y += overlapY;
+				}
+				else
+				{
+					m_pos.y -= overlapY;
+				}
+				//ポヨンッ
+				if (dy * m_vec.y < 0.0f)
+				{
+					//90%反発　壁にぶつかると10%勢いが落ちる
+					m_vec.y *= -0.9f;
+				}
 			}
 		}
 	}
@@ -113,11 +178,10 @@ void Player::Update()
 			if (f->m_isLeft && m_flipperInputSide == 1 && m_flipperInputTime > 0)
 			{
 				m_vec.x += tangent.x * 1.5f;
-
+				//縦　威力
 				m_vec.y -= 55.0f * power;
 				//ここ
 				m_vec.x += f->m_angVelocity * 20.0f;
-				//m_vec.y += f->m_angVelocity * 10.0f;
 
 				m_flipperInputTime = 0;
 				m_flipperInputSide = 0;
@@ -126,11 +190,10 @@ void Player::Update()
 			else if (!f->m_isLeft && m_flipperInputSide == 2 && m_flipperInputTime > 0)
 			{
 				m_vec.x += tangent.x * 1.5f;
-
+				//縦　威力
 				m_vec.y -= 55.0f * power;
 				//ここ
 				m_vec.x += f->m_angVelocity * 20.0f;
-				//m_vec.y -= f->m_angVelocity * 10.0f;
 
 				m_flipperInputTime = 0;
 				m_flipperInputSide = 0;
@@ -158,6 +221,24 @@ void Player::Update()
 }
 void Player::Draw()
 {
-	m_img.SetPos(m_pos);
+	//ランチャーのチャージが増えるほどバネ画像の高さが小さくなる
+	float springHeight = 120 - m_charge;
+	// 画像サイズを変更
+	m_springImg.SetSize(24, springHeight);
+	// 縮んだ画像の中心に合わせて中心位置も変更
+	m_springImg.SetCenter(12, springHeight / 2);
+	// 下端を固定
+	m_springImg.SetPos(CVector2D(1200, 985 - springHeight / 2));
+	m_springImg.Draw();
+
+	//ボール
+	CVector2D ballPos = m_pos;
+
+	if (!m_isLaunched)
+	{
+		ballPos.y += m_charge;
+	}
+
+	m_img.SetPos(ballPos);
 	m_img.Draw();
 }

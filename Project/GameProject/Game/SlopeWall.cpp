@@ -1,0 +1,109 @@
+#include "Base/Base.h"
+#include "Game/SlopeWall.h"
+
+SlopeWall::SlopeWall(const CVector2D& pos, bool isLeft) :Base(eType_SlopeWall)
+{
+    m_img = COPY_RESOURCE("SlopeWall", CImage);
+    m_pos = pos;
+    m_isLeft = isLeft;
+   
+    //斜め壁の回転軸
+    if (m_isLeft)
+    {
+        m_img.SetCenter(0, 16);
+    }
+    else
+    {
+        m_img.SetCenter(160, 16);
+    }
+    //m_img.SetSize(1000, 1000);
+
+    if (m_isLeft)
+    {
+        m_ang = 0.52f;
+    }
+    else
+    {
+        m_ang = -0.52f;
+    }
+
+    m_img.SetAng(-m_ang);
+}
+void SlopeWall::Update()
+{
+   
+}
+void SlopeWall::Draw()
+{
+    m_img.SetPos(m_pos);
+
+    if (!m_isLeft)
+    {
+        m_img.m_flipH = true;
+    }
+    else
+    {
+        m_img.m_flipH = false;
+    }
+
+    m_img.Draw();
+}
+bool SlopeWall::IsHit(const CVector2D& ballPos, CVector2D& normal,
+    float& overlap)
+{
+    CVector2D start;
+    CVector2D end;
+
+    float dx = 160 * cos(m_ang);
+    float dy = 160 * sin(m_ang);
+
+    if (m_isLeft)
+    {
+        // 左：左端を回転軸にする
+        start = m_pos;
+        end.x = m_pos.x + dx;
+        end.y = m_pos.y + dy;
+    }
+    else
+    {
+        // 右：右端を回転軸にする
+        start = m_pos;
+        end.x = m_pos.x - dx;
+        end.y = m_pos.y - dy;
+    }
+
+    //line:斜め壁の端から端までのベクトル　斜め壁そのものからボールまでのベクトル
+    CVector2D line = end - start;
+
+    //toBall:斜め壁の左端からボールまでのベクトル
+    CVector2D toBall = ballPos - start;
+
+    //Dot:内積
+    //t:斜め壁の線分上のどの位置にボールが近いかを表す値
+    //Length() :ベクトルの長さ
+    //LengthSq() :ベクトルの長さの2乗
+    float t = toBall.Dot(line) / line.LengthSq();
+
+    //tは、場合によってはマイナスや1より大きくなることがある
+    //今回はtを必ず0～1の範囲に収める
+    //これで線分の外にある場合も、最も近い端点を使って距離を計算できる
+    if (t < 0.0f) t = 0.0f;
+    if (t > 1.0f) t = 1.0f;
+
+    //最短距離になる点を求めている
+    CVector2D closest = start + line * t;
+    //diff:ボールと最短地点の距離を表すベクトル
+    CVector2D diff = ballPos - closest;
+    float distance = diff.Length();
+
+    //overlap：ボールが判定範囲にどれだけ入り込んだか
+    overlap = 32.0f - distance;
+
+    if (normal.y > 0.0f)
+    {
+        normal = normal * -1.0f;
+    }
+
+    //距離を2乗して比較
+    return diff.LengthSq() <= 32 * 32;
+}

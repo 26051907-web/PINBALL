@@ -5,6 +5,7 @@ enum {
     //eType_Door,
     //eType_AreaChange,
     eType_Wall,
+    eType_SlopeWall,
     eType_Flipper,
     eType_Player,
     //eType_Enemy,
