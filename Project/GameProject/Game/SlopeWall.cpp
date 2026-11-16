@@ -14,7 +14,7 @@ SlopeWall::SlopeWall(const CVector2D& pos, bool isLeft) :Base(eType_SlopeWall)
     }
     else
     {
-        m_img.SetCenter(160, 16);
+        m_img.SetCenter(448, 16);
     }
     //m_img.SetSize(1000, 1000);
 
@@ -48,14 +48,14 @@ void SlopeWall::Draw()
 
     m_img.Draw();
 }
-bool SlopeWall::IsHit(const CVector2D& ballPos, CVector2D& normal,
+bool SlopeWall::IsHit(const CVector2D& ballPos, float ballRad, CVector2D& normal,
     float& overlap)
 {
     CVector2D start;
     CVector2D end;
 
-    float dx = 160 * cos(m_ang);
-    float dy = 160 * sin(m_ang);
+    float dx = 448 * cos(m_ang);
+    float dy = 448 * sin(m_ang);
 
     if (m_isLeft)
     {
@@ -96,14 +96,20 @@ bool SlopeWall::IsHit(const CVector2D& ballPos, CVector2D& normal,
     CVector2D diff = ballPos - closest;
     float distance = diff.Length();
 
-    //overlap：ボールが判定範囲にどれだけ入り込んだか
-    overlap = 32.0f - distance;
-
-    if (normal.y > 0.0f)
+    if (distance > 0.0f)//ボールが壁から離れている：壁からボールへ向かう方向を使う
     {
-        normal = normal * -1.0f;
+        normal = diff * (1.0f / distance);
+    }
+    else//ボールが壁の真上にいる：壁に垂直な方向を作る
+    {
+        normal.x = -line.y;
+        normal.y = line.x;
+        normal = normal * (1.0f / line.Length());
     }
 
-    //距離を2乗して比較
-    return diff.LengthSq() <= 32 * 32;
+    float hitRadius = ballRad + 16.0f;
+
+    overlap = hitRadius - distance;
+
+    return distance <= hitRadius;
 }

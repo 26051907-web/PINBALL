@@ -13,15 +13,15 @@ Game::Game() :Base(eType_Scene)
     m_isRespawning = false;
 
     //new Player(CVector2D(960, 400));
-    new Player(CVector2D(1200, 850));
+    new Player(CVector2D(1200, 930));
 
-	new Wall(CVector2D(380, 540));
-    new Wall(CVector2D(1540, 540));
+	new Wall(CVector2D(120, 620));
+    new Wall(CVector2D(1800, 620));
 
-    //new SlopeWall(CVector2D(600, 500),true);
+    new SlopeWall(CVector2D(400, 750),true);
 
-	new Flipper(CVector2D(800, 900),true);
-	new Flipper(CVector2D(1120, 900), false);
+	new Flipper(CVector2D(800, 980),true);
+	new Flipper(CVector2D(1120, 980), false);
 }
 
 void::Game::Update()
@@ -36,7 +36,7 @@ void::Game::Update()
         if (m_lives > 0)
         {
             //new Player(CVector2D(960, 400));
-            new Player(CVector2D(1200, 850));
+            new Player(CVector2D(1200, 930));
             m_isRespawning = false;
         }
         else

@@ -14,7 +14,7 @@ public:
 	SlopeWall(const CVector2D& pos, bool isLeft);
 	void Update();
 	void Draw();
-	bool IsHit(const CVector2D& ballPos, CVector2D& normal, 
+	bool IsHit(const CVector2D& ballPos, float ballRad, CVector2D& normal,
 		 float& overlap);
 
 };

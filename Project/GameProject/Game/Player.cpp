@@ -48,10 +48,10 @@ void Player::Update()
 	}
 
 	//ランチャーの処理
-	//発射前のボールは (1200, 850) に固定
+	//発射前のボールは (1200, 930) に固定
 	if (!m_isLaunched)
 	{
-		m_pos = CVector2D(1200, 850);
+		m_pos = CVector2D(1200, 930);
 	}
 	//ボタン8を押している間、バネのチャージ量を増やす
 	if (!m_isLaunched)
@@ -76,8 +76,41 @@ void Player::Update()
 	//発射前は重力も移動も発生しない
 	if (m_isLaunched)
 	{
+		// 重力は1フレームに1回だけ加える
 		m_vec.y += GRAVITY;
-		m_pos += m_vec;
+
+		// 斜め壁を取得
+		std::vector<Base*> slopeWalls = Base::FindObjects(eType_SlopeWall);
+
+		// 1フレームの移動を8分割する
+		for (int i = 0; i < 8; i++)
+		{
+			// 少しだけ移動
+			m_pos += m_vec * (1.0f / 8.0f);
+
+			// 斜め壁との当たり判定
+			for (Base* b : slopeWalls)
+			{
+				SlopeWall* w = (SlopeWall*)b;
+
+				CVector2D normal;
+				float overlap;
+
+				if (w->IsHit(m_pos, m_rad, normal, overlap))
+				{
+					// めり込みを修正
+					m_pos += normal * overlap;
+
+					// 壁に向かって進んでいる場合だけ反射
+					float normalSpeed = m_vec.Dot(normal);
+
+					if (normalSpeed < 0.0f)
+					{
+						m_vec -= normal * (1.3f * normalSpeed);
+					}
+				}
+			}
+		}
 	}
 
 	//Baseのリストに登録されているFlipperをまとめて取得
@@ -228,7 +261,7 @@ void Player::Draw()
 	// 縮んだ画像の中心に合わせて中心位置も変更
 	m_springImg.SetCenter(12, springHeight / 2);
 	// 下端を固定
-	m_springImg.SetPos(CVector2D(1200, 985 - springHeight / 2));
+	m_springImg.SetPos(CVector2D(1200, 1065 - springHeight / 2));
 	m_springImg.Draw();
 
 	//ボール
