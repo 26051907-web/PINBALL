@@ -48,10 +48,10 @@ void Player::Update()
 	}
 
 	//ランチャーの処理
-	//発射前のボールは (1200, 930) に固定
+	//発射前のボールは (1200, 960) に固定
 	if (!m_isLaunched)
 	{
-		m_pos = CVector2D(1200, 930);
+		m_pos = CVector2D(1200, 960);
 	}
 	//ボタン8を押している間、バネのチャージ量を増やす
 	if (!m_isLaunched)
@@ -261,7 +261,7 @@ void Player::Draw()
 	// 縮んだ画像の中心に合わせて中心位置も変更
 	m_springImg.SetCenter(12, springHeight / 2);
 	// 下端を固定
-	m_springImg.SetPos(CVector2D(1200, 1065 - springHeight / 2));
+	m_springImg.SetPos(CVector2D(1200, 1095 - springHeight / 2));
 	m_springImg.Draw();
 
 	//ボール

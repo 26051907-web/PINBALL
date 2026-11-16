@@ -13,7 +13,7 @@ Game::Game() :Base(eType_Scene)
     m_isRespawning = false;
 
     //new Player(CVector2D(960, 400));
-    new Player(CVector2D(1200, 930));
+    new Player(CVector2D(1200, 960));
 
 	new Wall(CVector2D(120, 620));
     new Wall(CVector2D(1800, 620));
@@ -36,7 +36,7 @@ void::Game::Update()
         if (m_lives > 0)
         {
             //new Player(CVector2D(960, 400));
-            new Player(CVector2D(1200, 930));
+            new Player(CVector2D(1200, 960));
             m_isRespawning = false;
         }
         else
