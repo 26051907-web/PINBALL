@@ -19,6 +19,7 @@ Game::Game() :Base(eType_Scene)
     new Wall(CVector2D(1800, 620));
 
     new SlopeWall(CVector2D(400, 750),true);
+    //new SlopeWall(CVector2D(1520, 750), false);
 
 	new Flipper(CVector2D(800, 980),true);
 	new Flipper(CVector2D(1120, 980), false);
