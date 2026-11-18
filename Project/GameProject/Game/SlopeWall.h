@@ -7,11 +7,9 @@ public:
 	CImage m_img;
 	bool m_isLeft;
 	float m_ang;
-	//1フレームでフリッパーの角度がどれだけ変化したかを記録
-	float m_angVelocity;
-	bool m_isPressed;
+	float m_length;
 public:
-	SlopeWall(const CVector2D& pos, bool isLeft);
+	SlopeWall(const CVector2D& pos, bool isLeft, float length);
 	void Update();
 	void Draw();
 	bool IsHit(const CVector2D& ballPos, float ballRad, CVector2D& normal,

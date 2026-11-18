@@ -1,12 +1,13 @@
 #include "Base/Base.h"
 #include "Game/SlopeWall.h"
 
-SlopeWall::SlopeWall(const CVector2D& pos, bool isLeft) :Base(eType_SlopeWall)
+SlopeWall::SlopeWall(const CVector2D& pos, bool isLeft, float length) :Base(eType_SlopeWall)
 {
     m_img = COPY_RESOURCE("SlopeWall", CImage);
     m_pos = pos;
     m_isLeft = isLeft;
-   
+    m_length = length;
+
     //ŽÎ‚ß•Ç‚Ì‰ñ“]Ž²
     if (m_isLeft)
     {
@@ -14,9 +15,9 @@ SlopeWall::SlopeWall(const CVector2D& pos, bool isLeft) :Base(eType_SlopeWall)
     }
     else
     {
-        m_img.SetCenter(448, 16);
+        m_img.SetCenter(m_length, 16);
     }
-    //m_img.SetSize(1000, 1000);
+    m_img.SetSize(m_length, 32);
 
     if (m_isLeft)
     {
@@ -54,8 +55,8 @@ bool SlopeWall::IsHit(const CVector2D& ballPos, float ballRad, CVector2D& normal
     CVector2D start;
     CVector2D end;
 
-    float dx = 448 * cos(m_ang);
-    float dy = 448 * sin(m_ang);
+    float dx = m_length * cos(m_ang);
+    float dy = m_length * sin(m_ang);
 
     if (m_isLeft)
     {

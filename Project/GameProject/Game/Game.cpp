@@ -13,14 +13,25 @@ Game::Game() :Base(eType_Scene)
     m_isRespawning = false;
 
     //new Player(CVector2D(960, 400));
-    new Player(CVector2D(1200, 960));
+    new Player(CVector2D(1440, 960));
 
-	new Wall(CVector2D(120, 620));
-    new Wall(CVector2D(1800, 620));
+	new Wall(CVector2D(225, 620));
+    new Wall(CVector2D(1695, 620));
 
-    new SlopeWall(CVector2D(400, 750),true);
-    //new SlopeWall(CVector2D(1520, 750), false);
+    //¬Œ^•Ç
+    new Wall(CVector2D(1605, 1607), 30, 290);
 
+    new SlopeWall(CVector2D(400, 0), true, 300);
+    new SlopeWall(CVector2D(1520, 0), false, 300);
+
+    //new SlopeWall(CVector2D(400, 750), true, 450);
+    new SlopeWall(CVector2D(527, 820), true, 305);
+    new SlopeWall(CVector2D(1393, 820), false, 305);
+
+    new SlopeWall(CVector2D(400, 900), true, 380);
+    new SlopeWall(CVector2D(1393, 970), false, 300);
+
+    //’†‰›
 	new Flipper(CVector2D(800, 980),true);
 	new Flipper(CVector2D(1120, 980), false);
 }
@@ -37,7 +48,7 @@ void::Game::Update()
         if (m_lives > 0)
         {
             //new Player(CVector2D(960, 400));
-            new Player(CVector2D(1200, 960));
+            new Player(CVector2D(1440, 960));
             m_isRespawning = false;
         }
         else
