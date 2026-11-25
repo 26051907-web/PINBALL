@@ -3,6 +3,7 @@
 #include "Game/Flipper.h"
 #include "Game/Wall.h"
 #include "Game/SlopeWall.h"
+#include "Game/Bumper.h"
 
 Player::Player(const CVector2D& pos) :Base(eType_Player)
 {
@@ -82,6 +83,8 @@ void Player::Update()
 
 	//Baseのリストに登録されているWallをまとめて取得
 	std::vector<Base*> walls = Base::FindObjects(eType_Wall);
+	//Baseのリストに登録されているBumperをまとめて取得
+	std::vector<Base*> bumpers = Base::FindObjects(eType_Bumper);
 
 	//発射前は重力も移動も発生しない
 	if (m_isLaunched)
@@ -110,6 +113,12 @@ void Player::Update()
 				//dy：ボールと壁の上下方向の距離
 				float dx = m_pos.x - w->m_pos.x;
 				float dy = m_pos.y - w->m_pos.y;
+
+				if (w->m_pos.x == 1505 &&
+					m_pos.x < 1525 && m_pos.x > 1480)
+				{
+					printf("Near Wall: X=%f Y=%f\n", m_pos.x, m_pos.y);
+				}
 
 				//fabs() は小数の絶対値を求める関数 マイナスの距離もプラスにして比較できる
 				//ボールと壁の中心座標の距離を調べて、横幅・縦幅の範囲内に入ったかを判定している
@@ -161,7 +170,7 @@ void Player::Update()
 					}
 				}
 			}
-			// 斜め壁との当たり判定
+			//斜め壁との当たり判定
 			for (Base* b : slopeWalls)
 			{
 				SlopeWall* w = (SlopeWall*)b;
@@ -180,6 +189,26 @@ void Player::Update()
 					if (normalSpeed < 0.0f)
 					{
 						m_vec -= normal * (1.3f * normalSpeed);
+					}
+				}
+			}
+			//バンパーとの当たり判定
+			for (Base* b : bumpers)
+			{
+				Bumper* bumper = (Bumper*)b;
+
+				CVector2D normal;
+				float overlap;
+
+				if (bumper->IsHit(m_pos, m_rad, normal, overlap))
+				{
+					m_pos += normal * overlap;
+					//バンパーの反発処理
+					float normalSpeed = m_vec.Dot(normal);//normalSpeed：法線方向への速度
+
+					if (normalSpeed < 0.0f)
+					{
+						m_vec -= normal * (2.0f * normalSpeed);//2.0f：ぶつかったときの反発の強さを決める係数　マイナスの速度を反転させ、ボールを跳ね返す
 					}
 				}
 			}

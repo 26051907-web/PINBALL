@@ -94,6 +94,7 @@ void Init(void)
 	ADD_RESOURCE("SlopeWall", CImage::CreateImage("Image/SlopeWall.png"));
 	ADD_RESOURCE("Flipper", CImage::CreateImage("Image/Flipper.png"));
 	ADD_RESOURCE("Spring", CImage::CreateImage("Image/Spring.png"));
+	ADD_RESOURCE("Bumper", CImage::CreateImage("Image/Bumper.png"));
 	new Title();
 
 

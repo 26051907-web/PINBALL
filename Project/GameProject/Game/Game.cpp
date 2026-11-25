@@ -4,6 +4,7 @@
 #include "Game/Flipper.h"
 #include "Title/Result.h"
 #include "Game/SlopeWall.h"
+#include "Game/Bumper.h"
 
 Game::Game() :Base(eType_Scene)
 {
@@ -12,14 +13,14 @@ Game::Game() :Base(eType_Scene)
     //ïúäàë“ÇøÇ©
     m_isRespawning = false;
 
-    //new Player(CVector2D(960, 400));
-    new Player(CVector2D(1440, 960));
+    new Player(CVector2D(960, 400));
 
 	new Wall(CVector2D(225, 620));
     new Wall(CVector2D(1695, 620));
 
     //è¨å^ï«
-    new Wall(CVector2D(1605, 1607), 30, 290);
+    //new Wall(CVector2D(1295, 550), 30, 290);
+    new Wall(CVector2D(1395, 950), 30, 290);
 
     new SlopeWall(CVector2D(400, 0), true, 300);
     new SlopeWall(CVector2D(1520, 0), false, 300);
@@ -28,12 +29,14 @@ Game::Game() :Base(eType_Scene)
     new SlopeWall(CVector2D(527, 820), true, 305);
     new SlopeWall(CVector2D(1393, 820), false, 305);
 
-    new SlopeWall(CVector2D(400, 900), true, 380);
+    new SlopeWall(CVector2D(400, 905), true, 380);
     new SlopeWall(CVector2D(1393, 970), false, 300);
 
     //íÜâõ
 	new Flipper(CVector2D(800, 980),true);
 	new Flipper(CVector2D(1120, 980), false);
+
+    new Bumper(CVector2D(640, 450));
 }
 
 void::Game::Update()

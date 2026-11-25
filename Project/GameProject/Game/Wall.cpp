@@ -16,7 +16,7 @@ Wall::Wall(const CVector2D& pos, float width, float height)
     m_pos = pos;
 
     //画像の中心
-    m_img.SetCenter(225, 800);
+    m_img.SetCenter(width / 2, height / 2);
 
     //画像サイズ
     m_img.SetSize(width, height);
